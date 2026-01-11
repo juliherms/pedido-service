@@ -7,6 +7,9 @@ import io.smallrye.mutiny.Uni;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.acme.pedidos.dto.event.EnderecoEntregaEvent;
+import org.acme.pedidos.dto.event.ItemPedidoEvent;
+import org.acme.pedidos.dto.event.PedidoRecebidoEvent;
 import org.acme.pedidos.dto.request.CriarPedidoRequest;
 import org.acme.pedidos.dto.request.ItemPedidoRequest;
 import org.acme.pedidos.dto.response.PedidoCriadoResponse;
@@ -56,12 +59,28 @@ public class PedidoService {
         int totalItems = calculaarTotalItens(request);
         BigDecimal totalAmount = calculateValorTotal(request);
 
-        LOOGER.infof("Totais calculados. orderId=%s, totalItems=%d, totalAmount=%s ",
+        LOOGER.infof("Totais calculados. idPedido=%s, totalItems=%d, totalAmount=%s ",
                 idPedido, totalItems, totalAmount);
 
-        // TODO: criar o evento kafka
+        // Cria evento Kafka
+        PedidoRecebidoEvent event = criarEvento(idPedido, request, totalItems, totalAmount, criadoEm);
 
-        return null;
+        // Publica evento Kafka e aguarda confirmação (ack)
+        return eventProducer.publishOrderReceived(idPedido, event)
+                .onItem().invoke(() -> {
+                    ordersCreatedCounter.increment();
+                    kafkaPublishSuccessCounter.increment();
+                    sample.stop(orderProcessingTimer);
+                    LOG.infof("Pedido criado e evento publicado com sucesso. orderId=%s", idPedido);
+                })
+                .onFailure().invoke(throwable -> {
+                    kafkaPublishErrorCounter.increment();
+                    sample.stop(orderProcessingTimer);
+                    LOG.errorf(throwable, "Erro ao publicar evento Kafka. orderId=%s", idPedido);
+                })
+                .onFailure().transform(throwable ->
+                        new KafkaPublishException("Falha ao publicar evento de pedido", throwable))
+                .map(metadata -> buildResponse(idPedido, request, totalItems, totalAmount, criadoEm));
     }
 
     /**
@@ -84,5 +103,46 @@ public class PedidoService {
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Constrói o evento Kafka PedidoRecebidoEvent.
+     */
+    private PedidoRecebidoEvent criarEvento(
+            String idPedido,
+            CriarPedidoRequest request,
+            int totalItens,
+            BigDecimal valorTotal,
+            Instant criadoEm
+    ) {
+        String eventId = UUID.randomUUID().toString();
+
+        var eventItens = request.itens().stream()
+                .map(item -> new ItemPedidoEvent(
+                        item.idProduto(),
+                        item.nomeProduto(),
+                        item.quantidade(),
+                        item.valorUnitario()
+                ))
+                .toList();
+
+        var enderecoEntregaEvent = new EnderecoEntregaEvent(
+                request.enderecoEntregaRequest().rua(),
+                request.enderecoEntregaRequest().cidade(),
+                request.enderecoEntregaRequest().estado(),
+                request.enderecoEntregaRequest().cep(),
+                request.enderecoEntregaRequest().pais()
+        );
+
+        return new PedidoRecebidoEvent(
+                eventId,
+                idPedido,
+                request.clienteId(),
+                eventItens,
+                enderecoEntregaEvent,
+                totalItens,
+                valorTotal,
+                criadoEm
+        );
     }
 }
