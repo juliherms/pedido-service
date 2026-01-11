@@ -13,6 +13,8 @@ import org.acme.pedidos.dto.event.PedidoRecebidoEvent;
 import org.acme.pedidos.dto.request.CriarPedidoRequest;
 import org.acme.pedidos.dto.request.ItemPedidoRequest;
 import org.acme.pedidos.dto.response.PedidoCriadoResponse;
+import org.acme.pedidos.exceptions.KafkaPublishException;
+import org.acme.pedidos.producer.PedidoEventProducer;
 import org.jboss.logging.Logger;
 
 import java.math.BigDecimal;
@@ -27,6 +29,9 @@ public class PedidoService {
 
     @Inject
     MeterRegistry meterRegistry;
+
+    @Inject
+    PedidoEventProducer pedidoEventProducer;
 
     private Counter contadorPedidosCriados;
     private Counter contadorPublicacaoKafkaSucesso;
@@ -66,17 +71,17 @@ public class PedidoService {
         PedidoRecebidoEvent event = criarEvento(idPedido, request, totalItems, totalAmount, criadoEm);
 
         // Publica evento Kafka e aguarda confirmação (ack)
-        return eventProducer.publishOrderReceived(idPedido, event)
+        return pedidoEventProducer.publicar(idPedido, event)
                 .onItem().invoke(() -> {
-                    ordersCreatedCounter.increment();
-                    kafkaPublishSuccessCounter.increment();
-                    sample.stop(orderProcessingTimer);
-                    LOG.infof("Pedido criado e evento publicado com sucesso. orderId=%s", idPedido);
+                    contadorPedidosCriados.increment();
+                    contadorPublicacaoKafkaSucesso.increment();
+                    sample.stop(tempoProcessamentoPedido);
+                    LOOGER.infof("Pedido criado e evento publicado com sucesso. orderId=%s", idPedido);
                 })
                 .onFailure().invoke(throwable -> {
-                    kafkaPublishErrorCounter.increment();
-                    sample.stop(orderProcessingTimer);
-                    LOG.errorf(throwable, "Erro ao publicar evento Kafka. orderId=%s", idPedido);
+                    contadorPublicacaoKafkaErro.increment();
+                    sample.stop(tempoProcessamentoPedido);
+                    LOOGER.errorf(throwable, "Erro ao publicar evento Kafka. orderId=%s", idPedido);
                 })
                 .onFailure().transform(throwable ->
                         new KafkaPublishException("Falha ao publicar evento de pedido", throwable))
@@ -143,6 +148,26 @@ public class PedidoService {
                 totalItens,
                 valorTotal,
                 criadoEm
+        );
+    }
+
+    /**
+     * Constrói a resposta OrderCreatedResponse.
+     */
+    private PedidoCriadoResponse buildResponse(
+            String idPedido,
+            CriarPedidoRequest request,
+            int totalItens,
+            BigDecimal valorTotal,
+            Instant criandoEm
+    ) {
+        return new PedidoCriadoResponse(
+                idPedido,
+                request.clienteId(),
+                totalItens,
+                valorTotal,
+                "RECEBIDO",
+                criandoEm
         );
     }
 }
