@@ -32,8 +32,8 @@ RUN mvn clean package -DskipTests -B
 # ==================================================================
 FROM eclipse-temurin:21-jre-jammy
 
-LABEL maintainer="Exemplo De Processamento de Pedidos"
-LABEL app="pedido-service"
+LABEL maintainer="Exemplo Orders Team"
+LABEL app="ms-pedidos-api"
 LABEL version="1.0.0"
 
 # Variáveis de ambiente

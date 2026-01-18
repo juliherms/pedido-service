@@ -1,0 +1,28 @@
+# ==================================================================
+# Docker Compose Override para Locust em Modo HEADLESS
+# Uso: docker compose -f docker-compose.yml -f locust/docker-compose.locust-headless.yml up locust
+# ==================================================================
+version: '3.8'
+
+services:
+  locust:
+    command: >
+      -f /mnt/locust/locustfile.py
+      --headless
+      --users=120
+      --spawn-rate=4
+      --run-time=30m
+      --host=http://app:8080
+      --html=/mnt/locust/report.html
+      --csv=/mnt/locust/results
+      --only-summary
+    # Explicação dos parâmetros:
+    # --headless: Executa sem interface web
+    # --users=120: Número máximo de usuários simultâneos (para ~350 TPS)
+    # --spawn-rate=4: Adiciona 4 usuários por segundo (ramp-up de 30s)
+    # --run-time=30m: Executa por 30 minutos
+    # --html: Gera relatório HTML ao final
+    # --csv: Gera arquivos CSV com métricas
+    # --only-summary: Mostra apenas o resumo no final
+
+

@@ -1,0 +1,23 @@
+# ==================================================================
+# Grafana Dashboards Provisioning
+# Configuração automática de dashboards
+# ==================================================================
+
+apiVersion: 1
+
+providers:
+  # Provider para dashboards da aplicação Orders API
+  - name: 'Orders API Dashboards'
+    orgId: 1
+    folder: 'Quarkus Orders'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      # Path onde estão os arquivos JSON dos dashboards
+      path: /var/lib/grafana/dashboards
+      # Buscar recursivamente em subdiretórios
+      foldersFromFilesStructure: false
+
+

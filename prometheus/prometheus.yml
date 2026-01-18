@@ -15,7 +15,7 @@ global:
   # Labels externos aplicados a todas as métricas
   # Útil para identificar ambiente, cluster, etc.
   external_labels:
-    monitor: 'quarkus-orders-monitor'
+    monitor: 'quarkus-pedidos-monitor'
     environment: 'dev'
 
 # Configuração de scrape
@@ -28,8 +28,8 @@ scrape_configs:
           app: 'prometheus'
           tier: 'monitoring'
   
-  # Job 2: Aplicação Quarkus - ms-pedidos-api
-  - job_name: 'quarkus-orders-api'
+  # Job 2: Aplicação Quarkus - pedido-service
+  - job_name: 'quarkus-pedidos-api'
     # Intervalo de scrape específico para este job (sobrescreve global)
     scrape_interval: 10s
     scrape_timeout: 8s
@@ -46,9 +46,9 @@ scrape_configs:
     static_configs:
       - targets: ['app:8080']
         labels:
-          app: 'ms-pedidos-api'
+          app: 'pedido-service'
           tier: 'application'
-          component: 'orders-service'
+          component: 'pedidos-service'
           
     # Relabeling avançado (opcional)
     # Útil para adicionar/remover/modificar labels

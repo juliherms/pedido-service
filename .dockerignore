@@ -1,5 +1,111 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# ==================================================================
+# .dockerignore - Arquivos excluídos do contexto de build do Docker
+# ==================================================================
+# Este arquivo define o que NÃO será enviado para o Docker daemon
+# durante o build, reduzindo o tamanho do contexto e acelerando o build.
+#
+# IMPORTANTE: Este projeto usa multi-stage build, então precisamos
+# incluir pom.xml e src/ para compilar dentro do container.
+# ==================================================================
+
+# ==================================================================
+# Diretórios de Build e Cache
+# ==================================================================
+# Excluir target/ porque será gerado dentro do container
+target/
+
+# Cache do Maven local (não necessário no build)
+.mvn/repository/
+
+# ==================================================================
+# Controle de Versão
+# ==================================================================
+# Git não é necessário no container
+.git/
+.gitignore
+.gitattributes
+
+# ==================================================================
+# IDEs e Editores
+# ==================================================================
+# Arquivos de configuração de IDEs
+.idea/
+.vscode/
+.eclipse/
+.settings/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+
+# ==================================================================
+# Docker e Compose
+# ==================================================================
+# Não incluir outros Dockerfiles e compose no build
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# ==================================================================
+# Documentação e Recursos de Desenvolvimento
+# ==================================================================
+README.md
+*.md
+docs/
+.github/
+
+# ==================================================================
+# Arquivos de Teste e Qualidade
+# ==================================================================
+# Relatórios de teste (gerados durante build)
+**/test-results/
+**/coverage/
+**/reports/
+
+# ==================================================================
+# Arquivos de Configuração Local
+# ==================================================================
+# Configurações locais que não devem ir para produção
+.env
+.env.local
+*.local
+application-local.properties
+
+# ==================================================================
+# Logs e Arquivos Temporários
+# ==================================================================
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==================================================================
+# Ferramentas de Monitoramento e Teste de Carga
+# ==================================================================
+# Configurações do Prometheus, Grafana e Locust (não necessárias no app)
+prometheus/
+grafana/
+locust/
+
+# ==================================================================
+# Arquivos do Sistema Operacional
+# ==================================================================
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# ==================================================================
+# NOTA IMPORTANTE:
+# ==================================================================
+# Os seguintes arquivos/diretórios SÃO INCLUÍDOS no build:
+# - pom.xml          (necessário para Maven resolver dependências)
+# - src/             (código fonte para compilação)
+# - mvnw, mvnw.cmd   (Maven Wrapper, caso necessário)
+#
+# Estes são essenciais para o multi-stage build funcionar corretamente!
+# ==================================================================

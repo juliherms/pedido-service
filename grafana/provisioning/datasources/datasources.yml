@@ -1,0 +1,69 @@
+# ==================================================================
+# Grafana Datasources Provisioning
+# Configuração automática do datasource Prometheus
+# ==================================================================
+
+apiVersion: 1
+
+# Lista de datasources a serem provisionados
+datasources:
+  # Prometheus Datasource
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # URL do Prometheus no Docker Compose (nome do serviço na bridge network)
+    url: http://prometheus:9090
+    
+    # Datasource padrão
+    isDefault: true
+    
+    # Editable via UI
+    editable: true
+    
+    # JSON Data - Configurações específicas do Prometheus
+    jsonData:
+      # HTTP Method para queries (POST suporta queries maiores)
+      httpMethod: POST
+      
+      # Timeout para queries (30s)
+      timeout: 30
+      
+      # Query timeout do Prometheus
+      queryTimeout: 60s
+      
+      # Time interval para queries (alinhado com scrape_interval)
+      timeInterval: 15s
+      
+      # Habilitar exemplares (para tracing integration)
+      exemplarTraceIdDestinations: []
+      
+      # Custom query parameters (opcional)
+      customQueryParameters: ""
+      
+      # Incrementar step automaticamente para ranges grandes
+      incrementalQuerying: true
+      
+      # Disallow queries mais antigas que X (opcional)
+      # disableMetricsLookup: false
+      
+      # Prometheus type (padrão: Prometheus)
+      prometheusType: Prometheus
+      
+      # Prometheus version (detecção automática)
+      prometheusVersion: 2.48.0
+      
+      # Cache level
+      cacheLevel: 'High'
+      
+      # Habilitar alerting
+      manageAlerts: true
+    
+    # Version do datasource config (para migration)
+    version: 1
+    
+    # UID único do datasource (usado em dashboards)
+    uid: prometheus-orders
+    
+    # Org ID (1 = Main Org)
+    orgId: 1
+

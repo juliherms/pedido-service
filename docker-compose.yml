@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ==================================================================
   # APLICAÇÃO QUARKUS - MS PEDIDOS API
@@ -8,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ms-pedidos-api
+    container_name: pedido-service
     hostname: app
     ports:
       - "8080:8080"
