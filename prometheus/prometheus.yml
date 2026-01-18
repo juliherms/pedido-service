@@ -1,0 +1,81 @@
+# Prometheus Configuration
+# Configuração para scrape de métricas da aplicação Quarkus
+
+global:
+  # Intervalo padrão de scrape (coleta de métricas)
+  # Valor recomendado: 10-15s para observabilidade adequada sem sobrecarregar
+  scrape_interval: 15s
+  
+  # Timeout para cada requisição de scrape
+  scrape_timeout: 10s
+  
+  # Intervalo de avaliação de regras (não usado aqui mas boa prática definir)
+  evaluation_interval: 15s
+  
+  # Labels externos aplicados a todas as métricas
+  # Útil para identificar ambiente, cluster, etc.
+  external_labels:
+    monitor: 'quarkus-orders-monitor'
+    environment: 'dev'
+
+# Configuração de scrape
+scrape_configs:
+  # Job 1: Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          app: 'prometheus'
+          tier: 'monitoring'
+  
+  # Job 2: Aplicação Quarkus - ms-pedidos-api
+  - job_name: 'quarkus-orders-api'
+    # Intervalo de scrape específico para este job (sobrescreve global)
+    scrape_interval: 10s
+    scrape_timeout: 8s
+    
+    # Caminho do endpoint de métricas
+    # Quarkus 3.x expõe métricas em /q/metrics por padrão
+    metrics_path: '/q/metrics'
+    
+    # Scheme HTTP (usar HTTPS em produção com TLS configurado)
+    scheme: http
+    
+    # Targets estáticos
+    # Em Docker Compose, usar nome do serviço como hostname
+    static_configs:
+      - targets: ['app:8080']
+        labels:
+          app: 'ms-pedidos-api'
+          tier: 'application'
+          component: 'orders-service'
+          
+    # Relabeling avançado (opcional)
+    # Útil para adicionar/remover/modificar labels
+    metric_relabel_configs:
+      # Dropar métricas que começam com 'jvm_gc_live' (reduzir cardinalidade se necessário)
+      # - source_labels: [__name__]
+      #   regex: 'jvm_gc_live.*'
+      #   action: drop
+      
+      # Renomear label 'uri' para 'endpoint' (exemplo)
+      # - source_labels: [uri]
+      #   target_label: endpoint
+      #   action: replace
+      
+      # Manter apenas métricas específicas (whitelist) - descomente se necessário
+      # - source_labels: [__name__]
+      #   regex: '(http_server_requests_seconds.*|api_.*|jvm_memory_.*|jvm_threads_.*|process_cpu_usage|system_cpu_usage)'
+      #   action: keep
+
+# Configuração de Alerting (opcional, mas boa prática)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: ['alertmanager:9093']
+
+# Arquivos de regras (opcional)
+# rule_files:
+#   - "/etc/prometheus/rules/*.yml"
+
+
