@@ -124,7 +124,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-orders-api\"}[1m])) by (uri)",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"}[1m])) by (uri)",
           "legendFormat": "{{uri}}",
           "range": true,
           "refId": "A"
@@ -187,7 +187,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(http_server_requests_seconds_count{job=\"quarkus-orders-api\"})",
+          "expr": "sum(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"})",
           "legendFormat": "Total Requests",
           "range": true,
           "refId": "A"
@@ -258,7 +258,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-orders-api\",status=~\"5..\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"quarkus-orders-api\"}[5m])) * 100",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\",status=~\"5..\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"}[5m])) * 100",
           "legendFormat": "Error Rate",
           "range": true,
           "refId": "A"
@@ -329,7 +329,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-orders-api\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"}[5m]))",
           "legendFormat": "RPS",
           "range": true,
           "refId": "A"
@@ -400,7 +400,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"quarkus-orders-api\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"quarkus-orders-api\"}[5m]))",
+          "expr": "sum(rate(http_server_requests_seconds_sum{job=\"quarkus-pedidos-api\"}[5m])) / sum(rate(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"}[5m]))",
           "legendFormat": "Avg Latency",
           "range": true,
           "refId": "A"
@@ -540,7 +540,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-orders-api\"}[5m])) by (le))",
+          "expr": "histogram_quantile(0.50, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-pedidos-api\"}[5m])) by (le))",
           "legendFormat": "p50",
           "range": true,
           "refId": "A"
@@ -551,7 +551,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-orders-api\"}[5m])) by (le))",
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-pedidos-api\"}[5m])) by (le))",
           "legendFormat": "p95",
           "range": true,
           "refId": "B"
@@ -562,7 +562,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-orders-api\"}[5m])) by (le))",
+          "expr": "histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{job=\"quarkus-pedidos-api\"}[5m])) by (le))",
           "legendFormat": "p99",
           "range": true,
           "refId": "C"
@@ -655,7 +655,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "sum(increase(http_server_requests_seconds_count{job=\"quarkus-orders-api\"}[5m])) by (status)",
+          "expr": "sum(increase(http_server_requests_seconds_count{job=\"quarkus-pedidos-api\"}[5m])) by (status)",
           "legendFormat": "{{status}}",
           "range": true,
           "refId": "A"
@@ -766,7 +766,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{job=\"quarkus-orders-api\", area=\"heap\"}",
+          "expr": "jvm_memory_used_bytes{job=\"quarkus-pedidos-api\", area=\"heap\"}",
           "legendFormat": "Used - {{id}}",
           "range": true,
           "refId": "A"
@@ -777,7 +777,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{job=\"quarkus-orders-api\", area=\"heap\"}",
+          "expr": "jvm_memory_max_bytes{job=\"quarkus-pedidos-api\", area=\"heap\"}",
           "legendFormat": "Max - {{id}}",
           "range": true,
           "refId": "B"
@@ -871,7 +871,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "jvm_threads_live_threads{job=\"quarkus-orders-api\"}",
+          "expr": "jvm_threads_live_threads{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "Live Threads",
           "range": true,
           "refId": "A"
@@ -882,7 +882,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "jvm_threads_peak_threads{job=\"quarkus-orders-api\"}",
+          "expr": "jvm_threads_peak_threads{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "Peak Threads",
           "range": true,
           "refId": "B"
@@ -893,7 +893,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "jvm_threads_daemon_threads{job=\"quarkus-orders-api\"}",
+          "expr": "jvm_threads_daemon_threads{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "Daemon Threads",
           "range": true,
           "refId": "C"
@@ -964,7 +964,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "process_cpu_usage{job=\"quarkus-orders-api\"}",
+          "expr": "process_cpu_usage{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "Process CPU",
           "range": true,
           "refId": "A"
@@ -1035,7 +1035,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "system_cpu_usage{job=\"quarkus-orders-api\"}",
+          "expr": "system_cpu_usage{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "System CPU",
           "range": true,
           "refId": "A"
@@ -1129,7 +1129,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "rate(jvm_gc_pause_seconds_sum{job=\"quarkus-orders-api\"}[5m])",
+          "expr": "rate(jvm_gc_pause_seconds_sum{job=\"quarkus-pedidos-api\"}[5m])",
           "legendFormat": "GC Pause - {{action}} ({{cause}})",
           "range": true,
           "refId": "A"
@@ -1209,7 +1209,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_ping_requests_total{job=\"quarkus-orders-api\"}",
+          "expr": "api_ping_requests_total{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "Ping Requests",
           "range": true,
           "refId": "A"
@@ -1300,7 +1300,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "rate(api_ping_requests_total{job=\"quarkus-orders-api\"}[1m])",
+          "expr": "rate(api_ping_requests_total{job=\"quarkus-pedidos-api\"}[1m])",
           "legendFormat": "Ping Rate",
           "range": true,
           "refId": "A"
@@ -1372,7 +1372,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_requests_total{job=\"quarkus-orders-api\"}",
+          "expr": "api_work_requests_total{job=\"quarkus-pedidos-api\"}",
           "legendFormat": "{{status}}",
           "range": true,
           "refId": "A"
@@ -1443,7 +1443,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_requests_total{job=\"quarkus-orders-api\",status=\"success\"} / (api_work_requests_total{job=\"quarkus-orders-api\",status=\"success\"} + api_work_requests_total{job=\"quarkus-orders-api\",status=\"error\"}) * 100",
+          "expr": "api_work_requests_total{job=\"quarkus-pedidos-api\",status=\"success\"} / (api_work_requests_total{job=\"quarkus-pedidos-api\",status=\"success\"} + api_work_requests_total{job=\"quarkus-pedidos-api\",status=\"error\"}) * 100",
           "legendFormat": "Success Rate",
           "range": true,
           "refId": "A"
@@ -1583,7 +1583,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_duration_seconds{job=\"quarkus-orders-api\",quantile=\"0.5\"}",
+          "expr": "api_work_duration_seconds{job=\"quarkus-pedidos-api\",quantile=\"0.5\"}",
           "legendFormat": "p50",
           "range": true,
           "refId": "A"
@@ -1594,7 +1594,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_duration_seconds{job=\"quarkus-orders-api\",quantile=\"0.95\"}",
+          "expr": "api_work_duration_seconds{job=\"quarkus-pedidos-api\",quantile=\"0.95\"}",
           "legendFormat": "p95",
           "range": true,
           "refId": "B"
@@ -1605,7 +1605,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_duration_seconds{job=\"quarkus-orders-api\",quantile=\"0.99\"}",
+          "expr": "api_work_duration_seconds{job=\"quarkus-pedidos-api\",quantile=\"0.99\"}",
           "legendFormat": "p99",
           "range": true,
           "refId": "C"
@@ -1699,7 +1699,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_payload_size{job=\"quarkus-orders-api\",quantile=\"0.5\"}",
+          "expr": "api_work_payload_size{job=\"quarkus-pedidos-api\",quantile=\"0.5\"}",
           "legendFormat": "p50",
           "range": true,
           "refId": "A"
@@ -1710,7 +1710,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_payload_size{job=\"quarkus-orders-api\",quantile=\"0.95\"}",
+          "expr": "api_work_payload_size{job=\"quarkus-pedidos-api\",quantile=\"0.95\"}",
           "legendFormat": "p95",
           "range": true,
           "refId": "B"
@@ -1721,7 +1721,7 @@
             "uid": "prometheus-orders"
           },
           "editorMode": "code",
-          "expr": "api_work_payload_size{job=\"quarkus-orders-api\",quantile=\"0.99\"}",
+          "expr": "api_work_payload_size{job=\"quarkus-pedidos-api\",quantile=\"0.99\"}",
           "legendFormat": "p99",
           "range": true,
           "refId": "C"

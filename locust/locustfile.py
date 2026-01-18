@@ -10,22 +10,22 @@ from locust.runners import MasterRunner
 
 # Lista de produtos para variar os pedidos
 PRODUCTS = [
-    {"productId": "PROD-123", "productName": "Notebook Dell", "unitPrice": 2999.99},
-    {"productId": "PROD-456", "productName": "Mouse Logitech", "unitPrice": 89.90},
-    {"productId": "PROD-789", "productName": "Teclado Mecânico", "unitPrice": 549.90},
-    {"productId": "PROD-101", "productName": "Monitor LG 27\"", "unitPrice": 1299.99},
-    {"productId": "PROD-202", "productName": "Webcam Full HD", "unitPrice": 299.99},
-    {"productId": "PROD-303", "productName": "Headset Gamer", "unitPrice": 399.90},
+    {"idProduto": "PROD-123", "nomeProduto": "Notebook Dell", "valorUnitario": 2999.99},
+    {"idProduto": "PROD-456", "nomeProduto": "Mouse Logitech", "valorUnitario": 89.90},
+    {"idProduto": "PROD-789", "nomeProduto": "Teclado Mecânico", "valorUnitario": 549.90},
+    {"idProduto": "PROD-101", "nomeProduto": "Monitor LG 27\"", "valorUnitario": 1299.99},
+    {"idProduto": "PROD-202", "nomeProduto": "Webcam Full HD", "valorUnitario": 299.99},
+    {"idProduto": "PROD-303", "nomeProduto": "Headset Gamer", "valorUnitario": 399.90},
 ]
 
 # Lista de cidades para variar endereços
 CITIES = [
-    {"city": "São Paulo", "state": "SP"},
-    {"city": "Rio de Janeiro", "state": "RJ"},
-    {"city": "Belo Horizonte", "state": "MG"},
-    {"city": "Curitiba", "state": "PR"},
-    {"city": "Porto Alegre", "state": "RS"},
-    {"city": "Brasília", "state": "DF"},
+    {"cidade": "São Paulo", "estado": "SP"},
+    {"cidade": "Rio de Janeiro", "estado": "RJ"},
+    {"cidade": "Belo Horizonte", "estado": "MG"},
+    {"cidade": "Curitiba", "estado": "PR"},
+    {"cidade": "Porto Alegre", "estado": "RS"},
+    {"cidade": "Brasília", "estado": "DF"},
 ]
 
 class OrdersUser(HttpUser):
@@ -57,10 +57,10 @@ class OrdersUser(HttpUser):
         # Constrói os items do pedido
         items = [
             {
-                "productId": product["productId"],
-                "productName": product["productName"],
-                "quantity": random.randint(1, 5),
-                "unitPrice": product["unitPrice"]
+                "idProduto": product["idProduto"],
+                "nomeProduto": product["nomeProduto"],
+                "quantidade": random.randint(1, 5),
+                "valorUnitario": product["valorUnitario"]
             }
             for product in selected_products
         ]
@@ -73,24 +73,23 @@ class OrdersUser(HttpUser):
         
         # Constrói o payload
         payload = {
-            "customerId": self.customer_id,
-            "items": items,
-            "shippingAddress": {
-                "street": f"Rua Exemplo, {random.randint(1, 9999)}",
-                "city": location["city"],
-                "state": location["state"],
-                "zipCode": zipCode,
-                "country": "Brasil"
-            },
-            "currency": "BRL"
+            "clienteId": self.customer_id,
+            "itens": items,
+            "enderecoEntregaRequest": {
+                "rua": f"Rua Exemplo, {random.randint(1, 9999)}",
+                "cidade": location["cidade"],
+                "estado": location["estado"],
+                "cep": zipCode,
+                "pais": "Brasil"
+            }
         }
         
         # Envia requisição POST
         with self.client.post(
-            "/api/v1/orders",
+            "/api/v1/pedidos",
             json=payload,
             catch_response=True,
-            name="POST /api/v1/orders"
+            name="POST /api/v1/pedidos"
         ) as response:
             if response.status_code == 201:
                 response.success()
@@ -111,7 +110,7 @@ def on_test_start(environment, **kwargs):
     Executado quando o teste inicia.
     """
     print("=" * 80)
-    print("🚀 INICIANDO TESTE DE CARGA - Orders API")
+    print("INICIANDO TESTE DE CARGA - Orders API")
     print("=" * 80)
     if isinstance(environment.runner, MasterRunner):
         print("📊 Modo: Master (distribuído)")
@@ -127,9 +126,9 @@ def on_test_stop(environment, **kwargs):
     Executado quando o teste termina.
     """
     print("\n" + "=" * 80)
-    print("✅ TESTE DE CARGA CONCLUÍDO!")
+    print("TESTE DE CARGA CONCLUÍDO!")
     print("=" * 80)
-    print("📈 Verifique as métricas em:")
+    print("Verifique as métricas em:")
     print("   • Prometheus: http://localhost:9090")
     print("   • Grafana: http://localhost:3000")
     print("   • Locust: http://localhost:8089")
